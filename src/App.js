@@ -16,7 +16,11 @@ function App() {
   const [collection, setCollection] = React.useState([]);
 
   React.useEffect(() => {
-    fetch("https://647aea9bd2e5b6101db0a422.mockapi.io/photos")
+    fetch(
+      `https://647aea9bd2e5b6101db0a422.mockapi.io/photos?${
+        categoryId ? `category=${categoryId}` : ""
+      }`
+    )
       .then((res) => res.json())
       .then((json) => {
         setCollection(json);
@@ -25,7 +29,7 @@ function App() {
         console.warn(err);
         alert("Ошибка при получении даееых");
       });
-  }, []);
+  }, [categoryId]);
 
   return (
     <div className="App">

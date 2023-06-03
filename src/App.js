@@ -2,7 +2,16 @@ import React from "react";
 import "./index.scss";
 import { Collection } from "./Collection";
 
+const cats = [
+  { name: "Все" },
+  { name: "Море" },
+  { name: "Горы" },
+  { name: "Архитектура" },
+  { name: "Города" },
+];
+
 function App() {
+  const [categoryId, setCategoryId] = React.useState(0);
   const [searchValue, setsearchValue] = React.useState("");
   const [collection, setCollection] = React.useState([]);
 
@@ -23,11 +32,15 @@ function App() {
       <h1>Моя коллекция фотографий</h1>
       <div className="top">
         <ul className="tags">
-          <li className="active">Все</li>
-          <li>Горы</li>
-          <li>Море</li>
-          <li>Архитектура</li>
-          <li>Города</li>
+          {cats.map((obj, i) => (
+            <li
+              onClick={() => setCategoryId(i)}
+              className={categoryId === i ? "active" : ""}
+              key={obj.name}
+            >
+              {obj.name}
+            </li>
+          ))}
         </ul>
         <input
           value={searchValue}

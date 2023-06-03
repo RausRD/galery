@@ -11,15 +11,17 @@ const cats = [
 ];
 
 function App() {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [page, setPage] = React.useState(1);
   const [categoryId, setCategoryId] = React.useState(0);
   const [searchValue, setsearchValue] = React.useState("");
   const [collection, setCollection] = React.useState([]);
 
   React.useEffect(() => {
+    setIsLoading(true);
+    const category = categoryId ? `category=${categoryId}` : "";
     fetch(
-      `https://647aea9bd2e5b6101db0a422.mockapi.io/photos?${
-        categoryId ? `category=${categoryId}` : ""
-      }`
+      `https://647aea9bd2e5b6101db0a422.mockapi.io/photos?page=${page}&limit=3&${category}`
     )
       .then((res) => res.json())
       .then((json) => {
@@ -28,8 +30,11 @@ function App() {
       .catch((err) => {
         console.warn(err);
         alert("Ошибка при получении даееых");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, [categoryId]);
+  }, [categoryId, page]);
 
   return (
     <div className="App">
@@ -54,18 +59,27 @@ function App() {
         />
       </div>
       <div className="content">
-        {collection
-          .filter((obj) =>
-            obj.name.toLowerCase().includes(searchValue.toLowerCase())
-          )
-          .map((obj, index) => (
-            <Collection key={index} name={obj.name} images={obj.photos} />
-          ))}
+        {isLoading ? (
+          <h2>Идет загрузка...</h2>
+        ) : (
+          collection
+            .filter((obj) =>
+              obj.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+            .map((obj, index) => (
+              <Collection key={index} name={obj.name} images={obj.photos} />
+            ))
+        )}
       </div>
       <ul className="pagination">
-        <li>1</li>
-        <li className="active">2</li>
-        <li>3</li>
+        {[...Array(5)].map((_, i) => (
+          <li
+            onClick={() => setPage(i + 1)}
+            className={page === i + 1 ? "active" : ""}
+          >
+            {i + 1}
+          </li>
+        ))}
       </ul>
     </div>
   );
